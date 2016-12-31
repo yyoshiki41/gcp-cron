@@ -1,16 +1,18 @@
 # coding:utf-8
 
 import os
+import logging
 import json
-import requests
+import urllib2
 
-URL = "http://www.tbs.co.jp/kanran/"
-req = requests.get(URL)
-message = ""
+url = "http://www.tbs.co.jp/kanran/"
 
-if req.status_code == 200:
-    req.encoding = req.apparent_encoding
-    r = req.text.encode('utf-8')
+try:
+    req = urllib2.urlopen(url)
+
+    message = ""
+    #req.encoding = req.apparent_encoding
+    r = req.read()
     for line in r.splitlines():
         if line.find("クリスマスの約束") >= 0:
             message += line
@@ -18,13 +20,17 @@ if req.status_code == 200:
             message += line
         if line.find("バナナマン") >= 0:
             message += line
+    if len(message) > 0:
+        webhook = os.environ["SLACK_URL"]
+        payload = {
+            "channel": '@yyoshiki41',
+            "username": 'クリスマスの約束',
+            "icon_emoji": ':christmas_tree:',
+            "text": "```\n"+message+"\n```",
+        }
+        request = urllib2.Request(webhook, json.dumps(payload), {'Content-Type': 'application/json'})
+        urllib2.urlopen(request)
 
-if len(message) > 0:
-    webhooksURL = os.environ["SLACK_URL"]
-    payload_dic = {
-        "channel": '@yyoshiki41',
-        "username": 'クリスマスの約束',
-        "icon_emoji": ':christmas_tree:',
-        "text": "```\n"+message+"\n```",
-    }
-    requests.post(webhooksURL, data=json.dumps(payload_dic))
+except urllib2.URLError:
+    logging.exception('Caught exception fetching url')
+
