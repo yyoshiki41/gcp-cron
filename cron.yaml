@@ -2,5 +2,5 @@ cron:
 - description: scraping tbs
   url: /tasks/christmas
   target: beta
-  schedule: every day 00:00
+  schedule: every day 08:30
   timezone: Asia/Tokyo
