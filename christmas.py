@@ -18,8 +18,6 @@ try:
             message += line
         if line.find("小田和正") >= 0:
             message += line
-        if line.find("バナナマン") >= 0:
-            message += line
     if len(message) > 0:
         webhook = os.environ["SLACK_URL"]
         payload = {
