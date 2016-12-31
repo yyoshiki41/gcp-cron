@@ -1,7 +1,11 @@
 runtime: python27
+threadsafe: false
 api_version: 1
-threadsafe: true
 
 handlers:
 - url: /tasks/christmas
   script: christmas.py
+  login: admin
+
+env_variables:
+  SLACK_URL: ''
